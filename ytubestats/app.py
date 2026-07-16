@@ -267,6 +267,8 @@ st.set_page_config(page_title="YTubeStats", page_icon="📺", layout="wide")
 
 if "result" not in st.session_state:
     st.session_state.result = None
+if "input_key_version" not in st.session_state:
+    st.session_state.input_key_version = 0
 
 header_col, reset_col = st.columns([5, 1])
 with header_col:
@@ -275,6 +277,7 @@ with reset_col:
     st.write("")
     if st.button("🔄 Reset", use_container_width=True):
         st.session_state.result = None
+        st.session_state.input_key_version += 1
         st.rerun()
 
 api_key = st.secrets.get("YOUTUBE_API_KEY", "") if hasattr(st, "secrets") else ""
@@ -293,6 +296,7 @@ with top_col1:
         "Channel ID / @handle / channel URL",
         placeholder="e.g. @MrBeast or https://www.youtube.com/@MrBeast or UCX6OQ3DkcsbYNE6H8uQQuVA",
         label_visibility="collapsed",
+        key=f"channel_input_{st.session_state.input_key_version}",
     )
 with top_col2:
     go_clicked = st.button("Go →", type="primary", use_container_width=True, disabled=not channel_input)
