@@ -277,17 +277,15 @@ with reset_col:
         st.session_state.result = None
         st.rerun()
 
-with st.sidebar:
-    st.header("Settings")
-    default_key = st.secrets.get("YOUTUBE_API_KEY", "") if hasattr(st, "secrets") else ""
-    api_key = st.text_input(
-        "YouTube Data API v3 key",
-        value=default_key,
-        type="password",
-        help="Get one free at https://console.cloud.google.com/apis/credentials "
-        "after enabling 'YouTube Data API v3'.",
+api_key = st.secrets.get("YOUTUBE_API_KEY", "") if hasattr(st, "secrets") else ""
+
+if not api_key:
+    st.error(
+        "No YouTube API key configured. Add `YOUTUBE_API_KEY` under this app's "
+        "Settings → Secrets in Streamlit Cloud (or in a local `.streamlit/secrets.toml` "
+        "file when running locally), then reload the app."
     )
-    st.caption("Your key is only used for this session and is never stored or committed to the repo.")
+    st.stop()
 
 top_col1, top_col2 = st.columns([5, 1])
 with top_col1:
@@ -297,7 +295,7 @@ with top_col1:
         label_visibility="collapsed",
     )
 with top_col2:
-    go_clicked = st.button("Go →", type="primary", use_container_width=True, disabled=not (api_key and channel_input))
+    go_clicked = st.button("Go →", type="primary", use_container_width=True, disabled=not channel_input)
 
 if go_clicked:
     try:
