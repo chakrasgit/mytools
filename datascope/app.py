@@ -55,14 +55,17 @@ st.markdown("""
         color: #ffffff;
     }
 
-    /* Reset button, styled distinctly */
-    div[data-testid="stButton"] button[kind="secondary"] {
-        border-color: #ef4444;
-    }
-
-    /* Checkboxes / radios / multiselect: selected state */
+    /* Sheet selection checkboxes, rendered as circles that turn blue when ticked */
     .stCheckbox label span, .stRadio label span {
         color: var(--ds-text);
+    }
+    div[data-baseweb="checkbox"] > div:first-child {
+        border-radius: 50% !important;
+        border-color: var(--ds-blue-dark) !important;
+    }
+    div[data-baseweb="checkbox"] [aria-checked="true"] {
+        background-color: var(--ds-blue) !important;
+        border-color: var(--ds-blue) !important;
     }
     div[data-baseweb="tag"] {
         background-color: var(--ds-blue) !important;
@@ -123,11 +126,12 @@ if file:
         xls = pd.ExcelFile(file)
         st.sidebar.markdown("---")
         st.sidebar.header("📑 Sheet Selection")
-        selected_sheet_names = st.sidebar.multiselect(
-            "Choose sheet(s) to include in the report",
-            options=xls.sheet_names,
-            default=xls.sheet_names[:1],
-        )
+        st.sidebar.caption("All sheets are selected by default. Untick any you want to leave out.")
+        selected_sheet_names = []
+        for sheet_option in xls.sheet_names:
+            is_checked = st.sidebar.checkbox(sheet_option, value=True, key=f"sheet_{sheet_option}")
+            if is_checked:
+                selected_sheet_names.append(sheet_option)
         for name in selected_sheet_names:
             sheets[name] = pd.read_excel(xls, sheet_name=name)
 
@@ -211,36 +215,25 @@ if sheets:
     st.dataframe(summary_df, use_container_width=True)
     st.markdown("---")
 
-    # Per-sheet profile
+    # Combined column profile: one table covering every selected sheet,
+    # with Sheet as the second column after S.No
+    st.subheader("📋 Column Profile")
     all_profiles = []
     for name, df in sheets.items():
-        st.subheader(f"📋 Column Profile — {name}")
         profile_df = build_profile_df(df)
-        st.dataframe(profile_df, use_container_width=True)
+        profile_df.insert(1, "Sheet", name)
+        all_profiles.append(profile_df)
 
-        profile_for_download = profile_df.copy()
-        st.download_button(
-            label=f"⬇️ Download '{name}' report as CSV",
-            data=profile_for_download.to_csv(index=False).encode("utf-8"),
-            file_name=f"{name}_profile.csv",
-            mime="text/csv",
-            key=f"download_{name}",
-        )
+    combined_df = pd.concat(all_profiles, ignore_index=True)
+    st.dataframe(combined_df, use_container_width=True)
 
-        profile_with_sheet = profile_df.copy()
-        profile_with_sheet.insert(0, "Sheet", name)
-        all_profiles.append(profile_with_sheet)
-        st.markdown("---")
-
-    # Combined download across all selected sheets
-    if len(all_profiles) > 0:
-        combined_df = pd.concat(all_profiles, ignore_index=True)
-        st.download_button(
-            label="⬇️ Download combined report (all selected sheets) as CSV",
-            data=combined_df.to_csv(index=False).encode("utf-8"),
-            file_name="combined_profile_report.csv",
-            mime="text/csv",
-        )
+    st.download_button(
+        label="⬇️ Download report as CSV",
+        data=combined_df.to_csv(index=False).encode("utf-8"),
+        file_name="column_profile_report.csv",
+        mime="text/csv",
+    )
+    st.markdown("---")
 elif file:
     st.info("👈 Select at least one sheet from the sidebar to generate the report.")
 else:
