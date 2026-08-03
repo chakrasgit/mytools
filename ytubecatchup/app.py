@@ -289,30 +289,33 @@ def reset_everything():
 # --------------------------------------------------------------------------
 # UI
 # --------------------------------------------------------------------------
-header_col, btns_col = st.columns([3, 2])
-with header_col:
-    st.title("📺 YTubeCatchUp")
-    st.caption("Pull every video posted by your chosen channels, in one place.")
-with btns_col:
-    st.write("")  # vertical spacer to align with title
-    b1, b2, b3 = st.columns(3)
-    search_clicked = b1.button("🔍 Search")
-    b2.button("♻️ Reset", on_click=reset_everything)
-    csv_placeholder = b3.empty()
-    csv_placeholder.button("⬇️ CSV", disabled=True)
+# --------------------------------------------------------------------------
+# UI
+# --------------------------------------------------------------------------
+with st.container(border=True):
+    header_col, btns_col = st.columns([3, 2], vertical_alignment="center")
+    with header_col:
+        st.markdown("### 📺 YTubeCatchUp")
+        st.caption("Pull every video posted by your chosen channels, in one place.")
+    with btns_col:
+        b1, b2, b3 = st.columns(3, gap="small", vertical_alignment="center")
+        search_clicked = b1.button("🔍 Search")
+        b2.button("♻️ Reset", on_click=reset_everything)
+        csv_placeholder = b3.empty()
+        csv_placeholder.button("⬇️ CSV", disabled=True)
 
-channels_input = st.text_area(
-    "Channel links (comma-separated)",
-    placeholder="https://www.youtube.com/@channel1, https://www.youtube.com/channel/UCxxxxxx, ...",
-    key="channels_input",
-    height=100,
-)
+    channels_input = st.text_area(
+        "Channel links (comma-separated)",
+        placeholder="https://www.youtube.com/@channel1, https://www.youtube.com/channel/UCxxxxxx, ...",
+        key="channels_input",
+        height=100,
+    )
 
-col1, col2, _spacer = st.columns([1, 1, 3])
-with col1:
-    from_date = st.date_input("From date", format="DD/MM/YYYY", key="from_date")
-with col2:
-    to_date = st.date_input("To date", format="DD/MM/YYYY", key="to_date")
+    col1, col2, _spacer = st.columns([1, 1, 3], gap="small")
+    with col1:
+        from_date = st.date_input("From date", format="DD/MM/YYYY", key="from_date")
+    with col2:
+        to_date = st.date_input("To date", format="DD/MM/YYYY", key="to_date")
 
 if search_clicked:
     if not channels_input.strip():
