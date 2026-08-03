@@ -1,5 +1,5 @@
 """
-TubeCatchUp
+YTubeCatchUp
 A Streamlit tool to pull every video posted by a list of YouTube channels
 within a chosen date range, with clickable links, into one page.
 """
@@ -19,7 +19,14 @@ from googleapiclient.errors import HttpError
 # --------------------------------------------------------------------------
 IST = pytz.timezone("Asia/Kolkata")
 
-st.set_page_config(page_title="TubeCatchUp", layout="wide")
+st.set_page_config(page_title="YTubeCatchUp", layout="wide")
+
+
+def html_block(html):
+    """Streamlit's markdown renderer treats 4+ leading spaces on a line as
+    an indented code block, which prints raw HTML tags instead of rendering
+    them. Strip leading whitespace from every line to avoid that."""
+    return "\n".join(line.strip() for line in html.strip().splitlines())
 
 CUSTOM_CSS = """
 <style>
@@ -282,8 +289,15 @@ def reset_everything():
 # --------------------------------------------------------------------------
 # UI
 # --------------------------------------------------------------------------
-st.title("📺 TubeCatchUp")
+st.title("📺 YTubeCatchUp")
 st.caption("Pull every video posted by your chosen channels, in one place.")
+
+# Small buttons at the top. They're read further down, after the widgets
+# below define their values, but they render here because that's where
+# they're called.
+top_col1, top_col2, _spacer = st.columns([1, 1, 6])
+search_clicked = top_col1.button("🔍 Search")
+top_col2.button("♻️ Reset", on_click=reset_everything)
 
 channels_input = st.text_area(
     "Channel links (comma-separated)",
@@ -297,10 +311,6 @@ with col1:
     from_date = st.date_input("From date", format="DD/MM/YYYY", key="from_date")
 with col2:
     to_date = st.date_input("To date", format="DD/MM/YYYY", key="to_date")
-
-btn_col1, btn_col2 = st.columns([1, 1])
-search_clicked = btn_col1.button("🔍 Search", use_container_width=True)
-btn_col2.button("♻️ Reset", on_click=reset_everything, use_container_width=True)
 
 if search_clicked:
     if not channels_input.strip():
@@ -402,7 +412,10 @@ if st.session_state.results:
     for entry in st.session_state.results:
         if entry.get("error"):
             st.markdown(
-                f'<div class="channel-card"><span class="warning-row">⚠️ {entry["link"]} — {entry["error"]}</span></div>',
+                html_block(
+                    f'<div class="channel-card"><span class="warning-row">'
+                    f'⚠️ {entry["link"]} — {entry["error"]}</span></div>'
+                ),
                 unsafe_allow_html=True,
             )
             continue
@@ -413,51 +426,49 @@ if st.session_state.results:
         subs_display = fmt_num(meta["subscribers"]) if meta["subscribers"] is not None else "Hidden"
         views_display = fmt_num(meta["total_views"])
 
-        header_html = f"""
-        <div class="channel-card">
-            <span class="channel-title">{meta['title']}</span>
-            <span class="channel-stats">👥 {subs_display} subscribers &nbsp;|&nbsp; 👁 {views_display} total views</span>
-        """
+        header_html = (
+            '<div class="channel-card">'
+            f'<span class="channel-title">{meta["title"]}</span>'
+            f'<span class="channel-stats">👥 {subs_display} subscribers &nbsp;|&nbsp; '
+            f'👁 {views_display} total views</span>'
+        )
 
         if not videos:
-            header_html += "<p style='margin-top:12px;color:#9fb3c8;'>No videos posted in this date range.</p></div>"
-            st.markdown(header_html, unsafe_allow_html=True)
+            header_html += (
+                "<p style='margin-top:12px;color:#9fb3c8;'>"
+                "No videos posted in this date range.</p></div>"
+            )
+            st.markdown(html_block(header_html), unsafe_allow_html=True)
             continue
 
         rows_html = ""
         for i, v in enumerate(videos, start=1):
-            rows_html += f"""
-            <tr>
-                <td>{i}</td>
-                <td>{v['title']}</td>
-                <td><a href="{v['url']}" target="_blank">Click here</a></td>
-                <td>{v['duration']}</td>
-                <td>{v['type']}</td>
-                <td>{v['posted_ist']}</td>
-                <td>{fmt_num(v['views'])}</td>
-                <td>{fmt_num(v['likes']) if v['likes'] is not None else 'Hidden'}</td>
-                <td>{fmt_num(v['comments']) if v['comments'] is not None else 'Disabled'}</td>
-            </tr>
-            """
+            likes = fmt_num(v["likes"]) if v["likes"] is not None else "Hidden"
+            comments = fmt_num(v["comments"]) if v["comments"] is not None else "Disabled"
+            rows_html += (
+                "<tr>"
+                f"<td>{i}</td>"
+                f"<td>{v['title']}</td>"
+                f'<td><a href="{v["url"]}" target="_blank">Click here</a></td>'
+                f"<td>{v['duration']}</td>"
+                f"<td>{v['type']}</td>"
+                f"<td>{v['posted_ist']}</td>"
+                f"<td>{fmt_num(v['views'])}</td>"
+                f"<td>{likes}</td>"
+                f"<td>{comments}</td>"
+                "</tr>"
+            )
 
-        table_html = f"""
-            <table class="video-table">
-                <tr>
-                    <th>S.No</th>
-                    <th>Video Title</th>
-                    <th>Link</th>
-                    <th>Duration</th>
-                    <th>Type</th>
-                    <th>Posted</th>
-                    <th>Views</th>
-                    <th>Likes</th>
-                    <th>Comments</th>
-                </tr>
-                {rows_html}
-            </table>
-        </div>
-        """
-        st.markdown(header_html + table_html, unsafe_allow_html=True)
+        table_html = (
+            '<table class="video-table">'
+            "<tr>"
+            "<th>S.No</th><th>Video Title</th><th>Link</th><th>Duration</th>"
+            "<th>Type</th><th>Posted</th><th>Views</th><th>Likes</th><th>Comments</th>"
+            "</tr>"
+            f"{rows_html}"
+            "</table></div>"
+        )
+        st.markdown(html_block(header_html + table_html), unsafe_allow_html=True)
 
     if st.session_state.csv_rows:
         df = pd.DataFrame(st.session_state.csv_rows)
@@ -465,6 +476,6 @@ if st.session_state.results:
         st.download_button(
             "⬇️ Download CSV",
             data=csv_bytes,
-            file_name="tubecatchup_results.csv",
+            file_name="ytubecatchup_results.csv",
             mime="text/csv",
         )
