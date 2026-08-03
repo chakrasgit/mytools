@@ -289,15 +289,17 @@ def reset_everything():
 # --------------------------------------------------------------------------
 # UI
 # --------------------------------------------------------------------------
-st.title("📺 YTubeCatchUp")
-st.caption("Pull every video posted by your chosen channels, in one place.")
-
-# Small buttons at the top. They're read further down, after the widgets
-# below define their values, but they render here because that's where
-# they're called.
-top_col1, top_col2, _spacer = st.columns([1, 1, 6])
-search_clicked = top_col1.button("🔍 Search")
-top_col2.button("♻️ Reset", on_click=reset_everything)
+header_col, btns_col = st.columns([3, 2])
+with header_col:
+    st.title("📺 YTubeCatchUp")
+    st.caption("Pull every video posted by your chosen channels, in one place.")
+with btns_col:
+    st.write("")  # vertical spacer to align with title
+    b1, b2, b3 = st.columns(3)
+    search_clicked = b1.button("🔍 Search")
+    b2.button("♻️ Reset", on_click=reset_everything)
+    csv_placeholder = b3.empty()
+    csv_placeholder.button("⬇️ CSV", disabled=True)
 
 channels_input = st.text_area(
     "Channel links (comma-separated)",
@@ -306,7 +308,7 @@ channels_input = st.text_area(
     height=100,
 )
 
-col1, col2 = st.columns(2)
+col1, col2, _spacer = st.columns([1, 1, 3])
 with col1:
     from_date = st.date_input("From date", format="DD/MM/YYYY", key="from_date")
 with col2:
@@ -473,8 +475,8 @@ if st.session_state.results:
     if st.session_state.csv_rows:
         df = pd.DataFrame(st.session_state.csv_rows)
         csv_bytes = df.to_csv(index=False).encode("utf-8")
-        st.download_button(
-            "⬇️ Download CSV",
+        csv_placeholder.download_button(
+            "⬇️ CSV",
             data=csv_bytes,
             file_name="ytubecatchup_results.csv",
             mime="text/csv",
