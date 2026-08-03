@@ -289,33 +289,38 @@ def reset_everything():
 # --------------------------------------------------------------------------
 # UI
 # --------------------------------------------------------------------------
-# --------------------------------------------------------------------------
-# UI
-# --------------------------------------------------------------------------
+st.markdown("### 📺 YTubeCatchUp")
+st.caption("Pull every video posted by your chosen channels, in one place.")
+
+# One unboxed line: From date | To date | Reset | Download CSV.
+# vertical_alignment="bottom" lines up the button baselines with the date
+# input boxes (date inputs have a label above them, buttons don't).
+d1, d2, r1, c1, _spacer = st.columns(
+    [1.2, 1.2, 0.9, 1.4, 3], gap="small", vertical_alignment="bottom"
+)
+with d1:
+    from_date = st.date_input("From date", format="DD/MM/YYYY", key="from_date")
+with d2:
+    to_date = st.date_input("To date", format="DD/MM/YYYY", key="to_date")
+with r1:
+    st.button("Reset", on_click=reset_everything)
+with c1:
+    csv_placeholder = st.empty()
+    csv_placeholder.button("Download CSV", disabled=True)
+
+# Only the paste area gets a box, with Search attached to its bottom-right.
 with st.container(border=True):
-    header_col, btns_col = st.columns([3, 2], vertical_alignment="center")
-    with header_col:
-        st.markdown("### 📺 YTubeCatchUp")
-        st.caption("Pull every video posted by your chosen channels, in one place.")
-    with btns_col:
-        b1, b2, b3 = st.columns(3, gap="small", vertical_alignment="center")
-        search_clicked = b1.button("🔍 Search")
-        b2.button("♻️ Reset", on_click=reset_everything)
-        csv_placeholder = b3.empty()
-        csv_placeholder.button("⬇️ CSV", disabled=True)
-
-    channels_input = st.text_area(
-        "Channel links (comma-separated)",
-        placeholder="https://www.youtube.com/@channel1, https://www.youtube.com/channel/UCxxxxxx, ...",
-        key="channels_input",
-        height=100,
-    )
-
-    col1, col2, _spacer = st.columns([1, 1, 3], gap="small")
-    with col1:
-        from_date = st.date_input("From date", format="DD/MM/YYYY", key="from_date")
-    with col2:
-        to_date = st.date_input("To date", format="DD/MM/YYYY", key="to_date")
+    ta_col, btn_col = st.columns([5, 1], gap="small", vertical_alignment="bottom")
+    with ta_col:
+        channels_input = st.text_area(
+            "Channel links (comma-separated)",
+            placeholder="https://www.youtube.com/@channel1, https://www.youtube.com/channel/UCxxxxxx, ...",
+            key="channels_input",
+            height=100,
+            label_visibility="collapsed",
+        )
+    with btn_col:
+        search_clicked = st.button("Search")
 
 if search_clicked:
     if not channels_input.strip():
@@ -479,7 +484,7 @@ if st.session_state.results:
         df = pd.DataFrame(st.session_state.csv_rows)
         csv_bytes = df.to_csv(index=False).encode("utf-8")
         csv_placeholder.download_button(
-            "⬇️ CSV",
+            "Download CSV",
             data=csv_bytes,
             file_name="ytubecatchup_results.csv",
             mime="text/csv",
