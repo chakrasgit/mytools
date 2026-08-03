@@ -143,16 +143,51 @@ CUSTOM_CSS = """
         color: #f0883e;
         font-weight: 600;
     }
-    div.stButton > button {
+    div.stButton > button,
+    div[data-testid="stDownloadButton"] > button {
         background-color: #1f6feb;
-        color: white;
-        border: none;
+        color: #ffffff;
+        border: 1.5px solid #1f6feb;
         border-radius: 6px;
         font-weight: 600;
         padding: 6px 16px;
+        transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
     }
-    div.stButton > button:hover {
+    div.stButton > button:hover,
+    div[data-testid="stDownloadButton"] > button:hover {
         background-color: #388bfd;
+        border-color: #388bfd;
+    }
+    div.stButton > button:active,
+    div[data-testid="stDownloadButton"] > button:active {
+        background-color: #1158c7;
+        border-color: #1158c7;
+        transform: scale(0.98);
+    }
+    /* Reset button: red outline by default, filled red on hover/press */
+    .st-key-reset_btn button {
+        background-color: transparent !important;
+        color: #f85149 !important;
+        border: 1.5px solid #f85149 !important;
+    }
+    .st-key-reset_btn button:hover {
+        background-color: #f85149 !important;
+        color: #ffffff !important;
+        border-color: #f85149 !important;
+    }
+    .st-key-reset_btn button:active {
+        background-color: #da3633 !important;
+        border-color: #da3633 !important;
+        transform: scale(0.98);
+    }
+    /* Drop the boxed border Streamlit puts around the paste area, and hide
+       the built-in "Press Ctrl+Enter to apply" hint under it */
+    div[data-testid="stTextArea"] textarea {
+        border: 1px solid #1f2a37 !important;
+        background-color: #11161d !important;
+    }
+    [data-testid="InputInstructions"] {
+        display: none !important;
     }
 </style>
 """
@@ -179,7 +214,7 @@ def friendly_api_error(e):
         pass
     msg = str(e)
     if status == 403 and "quota" in msg.lower():
-        return "YouTube API daily quota exceeded — try again after it resets (midnight Pacific time)."
+        return "YouTube API daily quota exceeded. Try again after it resets (midnight Pacific time)."
     if status == 404:
         return "Channel or resource not found."
     if status == 400:
@@ -322,7 +357,7 @@ def parse_duration(iso_duration):
 
 def classify_type(duration_seconds):
     """Classify by duration only (YouTube's own Shorts cutoff is 3 minutes).
-    No live network probe here — that was slow and flaky under load."""
+    No live network probe here, that was slow and flaky under load."""
     if duration_seconds == 0:
         return "Live/Upcoming"
     return "Short" if duration_seconds <= SHORT_MAX_SECONDS else "Long"
@@ -404,40 +439,43 @@ st.markdown(
         '<div class="app-header"><span class="icon">📺</span>'
         '<span class="title">YTubeCatchUp</span></div>'
         '<div class="app-caption">Pull every video posted by your chosen '
-        'channels, in one place — no more clicking through each channel.</div>'
+        'channels, in one place, no more clicking through each channel.</div>'
     ),
     unsafe_allow_html=True,
 )
 
-# One unboxed line: From date | To date | Reset | Download CSV.
+# One line: From date | To date | Search | Reset | Download CSV.
 # vertical_alignment="bottom" lines up the button baselines with the date
 # input boxes (date inputs have a label above them, buttons don't).
-d1, d2, r1, c1, _spacer = st.columns(
-    [1.2, 1.2, 0.9, 1.4, 3], gap="small", vertical_alignment="bottom"
+d1, d2, s1, r1, c1, _spacer = st.columns(
+    [1.2, 1.2, 1.1, 1.1, 1.4, 2.2], gap="small", vertical_alignment="bottom"
 )
 with d1:
     from_date = st.date_input("From date", format="DD/MM/YYYY", key="from_date")
 with d2:
     to_date = st.date_input("To date", format="DD/MM/YYYY", key="to_date")
+with s1:
+    search_clicked = st.button("Search", key="search_btn", use_container_width=True)
 with r1:
-    st.button("Reset", on_click=reset_everything, use_container_width=True)
+    st.button("Reset", key="reset_btn", on_click=reset_everything, use_container_width=True)
 with c1:
     csv_placeholder = st.empty()
-    csv_placeholder.button("Download CSV", disabled=True, use_container_width=True)
+    csv_placeholder.button("Download CSV", key="csv_btn_placeholder", disabled=True, use_container_width=True)
 
-# Only the paste area gets a box, with Search attached to its bottom-right.
-with st.container(border=True):
-    ta_col, btn_col = st.columns([5, 1], gap="small", vertical_alignment="bottom")
-    with ta_col:
-        channels_input = st.text_area(
-            "Channel links (comma-separated)",
-            placeholder="https://www.youtube.com/@channel1, https://www.youtube.com/channel/UCxxxxxx, ...",
-            key="channels_input",
-            height=100,
-            label_visibility="collapsed",
-        )
-    with btn_col:
-        search_clicked = st.button("Search", use_container_width=True)
+# No enclosing box here on purpose, just the field itself with a subtle
+# border so it does not look like a boxed-in outline.
+channels_input = st.text_area(
+    "Channel links (comma-separated)",
+    placeholder=(
+        "Paste one or more channel links here, separated by commas. "
+        "For example: https://www.youtube.com/@channel1, "
+        "https://www.youtube.com/channel/UCxxxxxx. "
+        "You can paste with Ctrl+V (Cmd+V on Mac)."
+    ),
+    key="channels_input",
+    height=100,
+    label_visibility="collapsed",
+)
 
 if search_clicked:
     if not channels_input.strip():
@@ -450,7 +488,7 @@ if search_clicked:
         links = dedupe_links(channels_input)
 
         # Cache entries are only trustworthy for ranges that are fully in
-        # the past — if "to date" includes today, new uploads could land
+        # the past. If "to date" includes today, new uploads could land
         # after the first search, so we skip the cache for that case.
         today_ist = datetime.now(IST).date()
         cache_is_fresh_range = to_date < today_ist
@@ -559,7 +597,7 @@ if st.session_state.results:
             st.markdown(
                 html_block(
                     f'<div class="channel-card"><span class="warning-row">'
-                    f'⚠️ {html.escape(entry["link"])} — {html.escape(entry["error"])}</span></div>'
+                    f'⚠️ {html.escape(entry["link"])}: {html.escape(entry["error"])}</span></div>'
                 ),
                 unsafe_allow_html=True,
             )
@@ -586,7 +624,7 @@ if st.session_state.results:
         if entry.get("truncated"):
             header_html += (
                 '<div class="truncated-note">⚠️ This channel had more '
-                f'than {MAX_PLAYLIST_PAGES * 50} uploads to scan — results '
+                f'than {MAX_PLAYLIST_PAGES * 50} uploads to scan, results '
                 'for the oldest part of the range may be incomplete.</div>'
             )
 
