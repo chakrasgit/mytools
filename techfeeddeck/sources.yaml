@@ -1,0 +1,28 @@
+# Edit this file to add, remove, or reorder your sources.
+# Each entry needs a "name" (shown on the button) and a "url" (where it
+# opens to, in a new tab). Columns do not need to have the same number of
+# entries, shorter columns just leave blank cells at the bottom.
+
+twitter:
+  - name: "Twitter Account 1"
+    url: "https://x.com/replace_me_1"
+  - name: "Twitter Account 2"
+    url: "https://x.com/replace_me_2"
+  - name: "Twitter Account 3"
+    url: "https://x.com/replace_me_3"
+
+reddit:
+  - name: "r/replace_me_1"
+    url: "https://www.reddit.com/r/replace_me_1"
+  - name: "r/replace_me_2"
+    url: "https://www.reddit.com/r/replace_me_2"
+
+websites:
+  - name: "Website Name 1"
+    url: "https://example1.com"
+  - name: "Website Name 2"
+    url: "https://example2.com"
+  - name: "Website Name 3"
+    url: "https://example3.com"
+  - name: "Website Name 4"
+    url: "https://example4.com"
