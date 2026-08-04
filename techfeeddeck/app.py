@@ -10,6 +10,7 @@ from itertools import zip_longest
 from pathlib import Path
 
 import streamlit as st
+import streamlit.components.v1 as components
 import yaml
 
 APP_NAME = "TechFeedDeck"
@@ -56,9 +57,16 @@ CUSTOM_CSS = """
         margin-bottom: 18px;
     }
     div[data-testid="stTextInput"] input {
-        border: 1px solid #1f2a37 !important;
+        border: 1.5px solid #2d3f52 !important;
         background-color: #11161d !important;
         color: #e6edf3 !important;
+        border-radius: 6px !important;
+        padding: 6px 10px !important;
+        font-size: 14px !important;
+    }
+    div[data-testid="stTextInput"] input:focus {
+        border-color: #58a6ff !important;
+        box-shadow: 0 0 0 1px #58a6ff !important;
     }
     table.source-table {
         width: 100%;
@@ -88,25 +96,32 @@ CUSTOM_CSS = """
         display: inline-block;
         width: 100%;
         box-sizing: border-box;
-        padding: 7px 12px;
-        margin: 3px 0;
-        border-radius: 6px;
-        background-color: #11161d;
-        border: 1.5px solid #1f2a37;
-        color: #e6edf3 !important;
+        padding: 9px 14px;
+        margin: 4px 0;
+        border-radius: 8px;
+        background-color: #182534;
+        border: 1.5px solid #2d3f52;
+        border-left-width: 4px;
+        color: #f0f4f8 !important;
         text-decoration: none !important;
         font-weight: 600;
-        font-size: 13.5px;
-        transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.05s ease;
+        font-size: 14px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+        transition: background-color 0.15s ease, border-color 0.15s ease,
+                    transform 0.05s ease, box-shadow 0.15s ease;
     }
     .src-btn:hover {
-        border-color: #58a6ff;
-        background-color: #16202b;
+        background-color: #22344a;
+        box-shadow: 0 2px 10px rgba(88, 166, 255, 0.25);
     }
     .src-btn:active {
-        transform: scale(0.98);
-        background-color: #1a2733;
+        transform: scale(0.97);
+        background-color: #101a26;
+        box-shadow: none;
     }
+    .col-twitter .src-btn { border-left-color: #e6edf3; }
+    .col-reddit .src-btn { border-left-color: #ff6a3d; }
+    .col-websites .src-btn { border-left-color: #3fd9c7; }
     .col-twitter .src-btn:hover { border-color: #e6edf3; }
     .col-reddit .src-btn:hover { border-color: #ff6a3d; }
     .col-websites .src-btn:hover { border-color: #3fd9c7; }
@@ -155,16 +170,32 @@ st.markdown(
     html_block(
         f'<div class="app-header"><span class="icon">🗂️</span>'
         f'<span class="title">{html.escape(APP_NAME)}</span></div>'
-        '<div class="app-caption">All your Twitter/X accounts, subreddits, '
-        'and websites in one place. Click a name to open it in a new tab.</div>'
+        '<div class="app-caption">Your Twitter/X accounts, subreddits, and websites, in one place.</div>'
     ),
     unsafe_allow_html=True,
 )
 
-query = st.text_input(
-    "Search",
-    placeholder="Search by name...",
-    label_visibility="collapsed",
+search_col, _spacer = st.columns([1, 3])
+with search_col:
+    query = st.text_input(
+        "Search",
+        placeholder="Search by name...",
+        label_visibility="collapsed",
+        key="search_box",
+    )
+
+# Best-effort: stop the browser from suggesting unrelated autofill entries
+# (e.g. links typed into other apps) in this field. Browsers don't always
+# honor autocomplete="off" on text inputs, but this covers most of them.
+# st.markdown strips <script> tags, so this needs components.html instead.
+components.html(
+    """
+    <script>
+    const inp = window.parent.document.querySelector('input[aria-label="Search"]');
+    if (inp) { inp.setAttribute("autocomplete", "off"); }
+    </script>
+    """,
+    height=0,
 )
 
 twitter_all, reddit_all, websites_all = load_sources()
@@ -202,5 +233,3 @@ else:
         "</table>"
     )
     st.markdown(html_block(table_html), unsafe_allow_html=True)
-
-st.caption(f"Edit {DATA_FILE} to add, remove, or reorder sources.")
