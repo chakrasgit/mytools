@@ -7,12 +7,16 @@ new tab. All data lives in sources.yaml, no API keys needed.
 
 import html
 from itertools import zip_longest
+from pathlib import Path
 
 import streamlit as st
 import yaml
 
 APP_NAME = "TechFeedDeck"
-DATA_FILE = "sources.yaml"
+# Resolved relative to this file, not the working directory Streamlit is
+# launched from, since Streamlit Cloud runs from the repo root, not the
+# app's own folder, when the app lives in a subfolder.
+DATA_FILE = Path(__file__).parent / "sources.yaml"
 
 st.set_page_config(page_title=APP_NAME, layout="wide")
 
