@@ -84,6 +84,7 @@ CUSTOM_CSS = """
     }
     table.source-table th.col-twitter { color: #e6edf3; }
     table.source-table th.col-reddit { color: #ff6a3d; }
+    table.source-table th.col-youtube { color: #ff3b3b; }
     table.source-table th.col-websites { color: #3fd9c7; }
     table.source-table td {
         padding: 6px 12px;
@@ -121,9 +122,11 @@ CUSTOM_CSS = """
     }
     .col-twitter .src-btn { border-left-color: #e6edf3; }
     .col-reddit .src-btn { border-left-color: #ff6a3d; }
+    .col-youtube .src-btn { border-left-color: #ff3b3b; }
     .col-websites .src-btn { border-left-color: #3fd9c7; }
     .col-twitter .src-btn:hover { border-color: #e6edf3; }
     .col-reddit .src-btn:hover { border-color: #ff6a3d; }
+    .col-youtube .src-btn:hover { border-color: #ff3b3b; }
     .col-websites .src-btn:hover { border-color: #3fd9c7; }
     .empty-note {
         color: #6b7f93;
@@ -142,6 +145,7 @@ def load_sources():
     return (
         data.get("twitter", []) or [],
         data.get("reddit", []) or [],
+        data.get("youtube", []) or [],
         data.get("websites", []) or [],
     )
 
@@ -170,7 +174,7 @@ st.markdown(
     html_block(
         f'<div class="app-header"><span class="icon">🗂️</span>'
         f'<span class="title">{html.escape(APP_NAME)}</span></div>'
-        '<div class="app-caption">Your Twitter/X accounts, subreddits, and websites, in one place.</div>'
+        '<div class="app-caption">Your Twitter/X accounts, subreddits, YouTube channels, and websites, in one place.</div>'
     ),
     unsafe_allow_html=True,
 )
@@ -198,25 +202,29 @@ components.html(
     height=0,
 )
 
-twitter_all, reddit_all, websites_all = load_sources()
+twitter_all, reddit_all, youtube_all, websites_all = load_sources()
 
 twitter = filter_entries(twitter_all, query)
 reddit = filter_entries(reddit_all, query)
+youtube = filter_entries(youtube_all, query)
 websites = filter_entries(websites_all, query)
 
-if not (twitter or reddit or websites):
+if not (twitter or reddit or youtube or websites):
     st.markdown(
         '<p class="empty-note">No sources match your search.</p>',
         unsafe_allow_html=True,
     )
 else:
     rows_html = ""
-    for i, (t, r, w) in enumerate(zip_longest(twitter, reddit, websites), start=1):
+    for i, (t, r, y, w) in enumerate(
+        zip_longest(twitter, reddit, youtube, websites), start=1
+    ):
         rows_html += (
             "<tr>"
             f"<td>{i}</td>"
             f'<td class="col-twitter">{render_button(t)}</td>'
             f'<td class="col-reddit">{render_button(r)}</td>'
+            f'<td class="col-youtube">{render_button(y)}</td>'
             f'<td class="col-websites">{render_button(w)}</td>'
             "</tr>"
         )
@@ -227,6 +235,7 @@ else:
         "<th style='width:6%'>#</th>"
         "<th class='col-twitter'><i class='fa-brands fa-x-twitter'></i>&nbsp; Twitter / X</th>"
         "<th class='col-reddit'><i class='fa-brands fa-reddit-alien'></i>&nbsp; Reddit</th>"
+        "<th class='col-youtube'><i class='fa-brands fa-youtube'></i>&nbsp; YouTube</th>"
         "<th class='col-websites'><i class='fa-solid fa-globe'></i>&nbsp; Websites</th>"
         "</tr>"
         f"{rows_html}"
