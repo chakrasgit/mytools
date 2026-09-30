@@ -17,6 +17,18 @@ reddit:
   - name: "r/replace_me_2"
     url: "https://www.reddit.com/r/replace_me_2"
 
+youtube:
+  - name: "@vaibhavsisinty"
+    url: "https://www.youtube.com/@vaibhavsisinty"
+  - name: "@theAIsearch"
+    url: "https://www.youtube.com/@theAIsearch"
+  - name: "@airevolutionx"
+    url: "https://www.youtube.com/@airevolutionx"
+  - name: "@intheworldofai"
+    url: "https://www.youtube.com/@intheworldofai"
+  - name: "@codedigiptbiplab"
+    url: "https://www.youtube.com/@codedigiptbiplab"
+
 websites:
   - name: "OpenAI News"
     url: "https://openai.com/news/"
