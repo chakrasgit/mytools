@@ -17,6 +17,12 @@ FIELDS = [
     "source_or_prompt", "reuse_of", "suggested_format", "notes",
 ]
 
+# Columns the app shows. The CSV must contain all of them; any other columns are ignored.
+REQUIRED = [
+    "chunk", "scene_id", "media_name", "media_type", "duration_s", "script_part_te",
+    "script_part_en", "what_to_gather", "source_or_prompt", "reuse_of",
+]
+
 # Badge colors (background, text) per media type, lower-case keys.
 BADGES = {
     "real image": ("#17415f", "#9ad9f7"),
@@ -172,8 +178,9 @@ def build_rows(text):
     """Parse the CSV (all values stay strings) and return rows sorted by scene ID."""
     reader = csv.DictReader(io.StringIO(text, newline=""))
     fields = reader.fieldnames or []
-    if "scene_id" not in fields or "media_name" not in fields:
-        raise ValueError("This does not look like a scene plan CSV (needs scene_id and media_name columns).")
+    missing = [c for c in REQUIRED if c not in fields]
+    if missing:
+        raise ValueError("This CSV can't be used. Missing columns: " + ", ".join(missing))
     raw = []
     for rec in reader:
         row = {f: (rec.get(f) or "").strip() for f in FIELDS}
