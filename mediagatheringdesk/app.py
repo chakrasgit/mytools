@@ -53,6 +53,8 @@ CSS = """
 [data-testid="stFileUploaderDropzoneInstructions"]{display:none}
 [data-testid="stFileUploaderDropzone"] button{background:#3b78e7;color:#fff;border:none;border-radius:7px;padding:0.4rem 1.1rem;font-size:13px;font-weight:500}
 [data-testid="stFileUploaderDropzone"] button:hover{background:#4d87f0;color:#fff}
+[data-testid="stFileUploader"] [data-testid="stBaseButton-borderlessIcon"]{display:none}
+[data-testid="stFileUploader"] [data-testid="stBaseButton-minimal"]{background:transparent;color:#aab6d1;padding:0.2rem}
 .fchip{display:inline-block;background:#1b2845;border-radius:8px;padding:7px 14px;font-size:13px;color:#e8eefc}
 .fchip span{color:#aab6d1;margin-left:8px}
 .chipwrap{text-align:right;padding-bottom:1rem}
@@ -356,7 +358,7 @@ def render_rows(visible, rows, done):
             for r in visible if done.get(r["key"])
         ]
         if dim:
-            st.markdown(f"<style>{','.join(dim)}{{opacity:.5}}</style>", unsafe_allow_html=True)
+            st.markdown(f"<style>{','.join(dim)}{{opacity:.38}}</style>", unsafe_allow_html=True)
         for r in visible:
             key = r["key"]
             is_done = bool(done.get(key))
@@ -366,7 +368,6 @@ def render_rows(visible, rows, done):
                 mark.button(
                     "\u200b", key=f"g_{key}",
                     type="primary" if is_done else "secondary",
-                    help="Gathered. Click to undo." if is_done else "Mark as gathered",
                     on_click=toggle_done, args=(key,),
                 )
                 sid.markdown(cell_id(r), unsafe_allow_html=True)
