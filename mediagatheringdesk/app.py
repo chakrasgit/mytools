@@ -30,33 +30,39 @@ BADGES = {
 }
 DEFAULT_BADGE = ("#313a50", "#c3cce0")
 
-# Column widths: ID, gathered mark, media, what to gather, source, script.
-SPEC = [0.55, 0.45, 2.4, 3.2, 3.2, 3.4]
-HEADS = ["ID", "Done", "Media", "What to gather", "Source or prompt", "Script"]
+# Column widths: mark + ID, media, what to gather, source, script.
+SPEC = [1.15, 2.4, 3.2, 3.2, 3.4]
+HEADS = ["ID", "Media", "What to gather", "Source or prompt", "Script"]
 
 CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;500&display=swap');
 
 [data-testid="stHeader"]{display:none}
-[data-testid="stMainBlockContainer"]{padding:0.7rem 1.4rem 3rem;max-width:100%}
-.title,.cell,.glabel,.head,[class*="st-key-"] button{font-family:"Segoe UI",system-ui,-apple-system,sans-serif}
+[data-testid="stMainBlockContainer"]{padding:1.1rem 2.6rem 3rem;max-width:100%}
+.title,.cell,.glabel,.head,.fchip,[class*="st-key-"] button{font-family:"Segoe UI",system-ui,-apple-system,sans-serif}
 
-/* sticky top area */
+/* sticky top area: title, filters, table header */
 [data-testid="stLayoutWrapper"]:has(> .st-key-topbar){position:sticky;top:0;z-index:100;background:#0e1526}
-.st-key-topbar{background:#0e1526;padding:0.1rem 0 0.4rem;gap:0.5rem}
-.title{font-size:1.25rem;font-weight:500;color:#f1f5ff}
+.st-key-topbar{background:#0e1526;padding:0;gap:0.9rem}
+.title{font-size:1.3rem;font-weight:600;color:#f1f5ff;padding-bottom:1rem}
 
-/* upload */
-[data-testid="stFileUploaderDropzone"]{padding:0.3rem 0.5rem;background:#1b2845;border:none;border-radius:8px}
+/* upload: compact button before upload, plain chip after */
+[data-testid="stFileUploader"]{width:fit-content;margin-left:auto}
+[data-testid="stFileUploader"] section{padding:0}
+[data-testid="stFileUploaderDropzone"]{padding:0;min-height:0;background:transparent;border:none}
 [data-testid="stFileUploaderDropzoneInstructions"]{display:none}
+[data-testid="stFileUploaderDropzone"] button{background:#3b78e7;color:#fff;border:none;border-radius:7px;padding:0.4rem 1.1rem;font-size:13px;font-weight:500}
+[data-testid="stFileUploaderDropzone"] button:hover{background:#4d87f0;color:#fff}
+.fchip{display:inline-block;background:#1b2845;border-radius:8px;padding:7px 14px;font-size:13px;color:#e8eefc}
+.fchip span{color:#aab6d1;margin-left:8px}
+.chipwrap{text-align:right;padding-bottom:1rem}
 
-/* filter panel: one panel, two lines, divider between */
-.st-key-pane{background:#16213a;border-radius:10px;padding:0.35rem 0.7rem;gap:0}
-.st-key-frow_status,.st-key-frow_type{padding:0.4rem 0}
+/* filter panel */
+.st-key-pane{position:relative;background:#16213a;border-radius:10px;padding:0.55rem 1rem;gap:0}
+.st-key-frow_status,.st-key-frow_type{padding:0.55rem 0}
 .st-key-frow_type{border-top:1px solid #2a3b61}
-.glabel{font-size:13px;font-weight:500;color:#b9c5de;white-space:nowrap}
+.glabel{font-size:13px;font-weight:500;color:#b9c5de;white-space:nowrap;padding-bottom:1rem}
 
-/* filter buttons: no borders, filled shapes, blue states */
 [class*="st-key-fs_"] button,[class*="st-key-ft_"] button{
   width:100%;height:32px;min-height:32px;padding:0 8px;border:none;border-radius:7px;box-shadow:none;
   white-space:nowrap;overflow:hidden;transition:background .12s,color .12s,transform .06s}
@@ -75,30 +81,33 @@ CSS = """
 [class*="st-key-fs_"] button[data-testid="stBaseButton-primary"]:active,
 [class*="st-key-ft_"] button[data-testid="stBaseButton-primary"]:active{background:#2f66cc;color:#ffffff;transform:scale(.97)}
 
-/* reset icon button */
-.st-key-reset_filters{display:flex;justify-content:flex-end}
-.st-key-reset_filters button{width:32px;min-width:32px;height:32px;min-height:32px;padding:0;border:none;border-radius:7px;
-  background:#1f2d4d;color:#d3ddf2;box-shadow:none;display:flex;align-items:center;justify-content:center}
+/* reset: top-right corner of the panel, icon drawn by CSS so it is exactly centered */
+.st-key-reset_filters{position:absolute;top:0.55rem;right:1rem;width:auto;z-index:5}
+.st-key-reset_filters button{position:relative;width:32px;min-width:32px;height:32px;min-height:32px;padding:0;border:none;
+  border-radius:7px;background:#1f2d4d;color:#d3ddf2;box-shadow:none;overflow:hidden}
+.st-key-reset_filters button > *{display:none}
+.st-key-reset_filters button::before{content:"";position:absolute;inset:0;margin:auto;width:16px;height:16px;background:currentColor;
+  -webkit-mask:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4'/%3E%3Cpath d='M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 11a8.1 8.1 0 0 0 -15.5 -2m-.5 -4v4h4'/%3E%3Cpath d='M4 13a8.1 8.1 0 0 0 15.5 2m.5 4v-4h-4'/%3E%3C/svg%3E") center/contain no-repeat}
 .st-key-reset_filters button:hover{background:#2b4378;color:#fff}
 .st-key-reset_filters button:active{background:#35569e;color:#fff;transform:scale(.95)}
-.st-key-reset_filters button p{display:none}
-.st-key-reset_filters button span{margin:0}
 
-/* gathered mark: two states, centered */
-[class*="st-key-g_"] button{width:26px;min-width:26px;height:26px;min-height:26px;padding:0;border:none;border-radius:7px;
-  box-shadow:none;transition:none;display:flex;align-items:center;justify-content:center}
-[class*="st-key-g_"] button p{display:none}
-[class*="st-key-g_"] button span{margin:0;font-size:18px}
+/* table: header bar and body read as one object */
+.st-key-thead{background:#25376a;border-radius:10px 10px 0 0;padding:0.7rem 1rem;margin-top:0.35rem}
+.head{font-size:13px;font-weight:600;color:#f4f7ff;letter-spacing:.2px;padding-bottom:1rem}
+[data-testid="stLayoutWrapper"]:has(> .st-key-tbody){margin-top:-1rem}
+.st-key-tbody{background:#121b30;border-radius:0 0 10px 10px;padding:0 1rem 0.3rem;gap:0}
+[class*="st-key-row_"]{border-bottom:1px solid #26365a;padding:0.85rem 0}
+
+/* gathered mark: two states, plain fill */
+[class*="st-key-g_"] button{width:24px;min-width:24px;height:24px;min-height:24px;padding:0;border:none;border-radius:7px;
+  box-shadow:none;transition:none;margin-top:1px}
+[class*="st-key-g_"] button > *{display:none}
 [class*="st-key-g_"] button[data-testid="stBaseButton-secondary"],
 [class*="st-key-g_"] button[data-testid="stBaseButton-secondary"]:hover,
-[class*="st-key-g_"] button[data-testid="stBaseButton-secondary"]:active{background:#3a4a72;color:transparent}
+[class*="st-key-g_"] button[data-testid="stBaseButton-secondary"]:active{background:#3a4a72}
 [class*="st-key-g_"] button[data-testid="stBaseButton-primary"],
 [class*="st-key-g_"] button[data-testid="stBaseButton-primary"]:hover,
-[class*="st-key-g_"] button[data-testid="stBaseButton-primary"]:active{background:#3b78e7;color:#ffffff}
-
-/* rows */
-[class*="st-key-row_"]{border-bottom:1px solid #26365a;padding:0.65rem 0}
-.head{font-size:12px;font-weight:500;color:#b9c5de;border-bottom:1px solid #2a3b61;padding-bottom:5px}
+[class*="st-key-g_"] button[data-testid="stBaseButton-primary"]:active{background:#3b78e7}
 
 .cell{font-size:13.5px;line-height:1.6;color:#e8eefc;overflow-wrap:anywhere;padding-bottom:1rem}
 .cell a{color:#8fbcff}
@@ -111,7 +120,7 @@ CSS = """
 .chunk{font-size:12px;color:#9fb0cf;margin-bottom:4px}
 .te{font-family:"Noto Sans Telugu","Nirmala UI","Gautami",sans-serif;font-size:13.5px;line-height:1.85;color:#f1f5ff}
 .en{font-size:13.5px;color:#b9c5de;margin-top:5px}
-.anc{display:block;position:relative;top:-230px;visibility:hidden}
+.anc{display:block;position:relative;top:-260px;visibility:hidden}
 .empty{color:#aab6d1;padding:2rem 0}
 """
 
@@ -251,19 +260,14 @@ def toggle_done(key):
 
 
 def clear_data():
-    for k in ("rows", "done", "fid", "fname"):
+    for k in ("rows", "done", "fname"):
         st.session_state.pop(k, None)
     reset_filters()
 
 
 def load_upload(up):
-    """Load a new upload into session state; clear state if the file was removed."""
+    """Load a new upload into session state, then rerun so the uploader is replaced by a chip."""
     if up is None:
-        if st.session_state.get("fid") is not None:
-            clear_data()
-        return
-    fid = (up.name, up.size, getattr(up, "file_id", ""))
-    if st.session_state.get("fid") == fid:
         return
     try:
         rows = build_rows(up.getvalue().decode("utf-8-sig"))
@@ -275,9 +279,9 @@ def load_upload(up):
         return
     st.session_state.rows = rows
     st.session_state.done = {r["key"]: False for r in rows}
-    st.session_state.fid = fid
     st.session_state.fname = up.name
     reset_filters()
+    st.rerun()
 
 
 # ---------- rendering ----------
@@ -322,7 +326,7 @@ def render_filters(rows, done):
         with st.container(key="frow_status"):
             cols = filter_row("fs", "Status", status_opts, f_status, "f_status", slots)
             cols[-1].button(
-                "\u200b", key="reset_filters", icon=":material/refresh:",
+                "\u200b", key="reset_filters",
                 help="Reset filters", on_click=reset_filters,
             )
         with st.container(key="frow_type"):
@@ -335,39 +339,41 @@ def render_filters(rows, done):
 
 
 def render_header_row():
-    cols = st.columns(SPEC, gap="small")
-    for col, head in zip(cols, HEADS):
-        col.markdown(f'<div class="head">{head}</div>', unsafe_allow_html=True)
+    with st.container(key="thead"):
+        cols = st.columns(SPEC, gap="small")
+        for col, head in zip(cols, HEADS):
+            col.markdown(f'<div class="head">{head}</div>', unsafe_allow_html=True)
 
 
 def render_rows(visible, rows, done):
     by_key = {r["key"]: r for r in rows}
-    if not visible:
-        st.markdown('<div class="empty">No scenes match these filters.</div>', unsafe_allow_html=True)
-        return
-    dim = [
-        f'.st-key-row_{r["key"]} [data-testid="stMarkdownContainer"]'
-        for r in visible if done.get(r["key"])
-    ]
-    if dim:
-        st.markdown(f"<style>{','.join(dim)}{{opacity:.5}}</style>", unsafe_allow_html=True)
-    for r in visible:
-        key = r["key"]
-        is_done = bool(done.get(key))
-        with st.container(key=f"row_{key}"):
-            c = st.columns(SPEC, gap="small")
-            c[0].markdown(cell_id(r), unsafe_allow_html=True)
-            c[1].button(
-                "\u200b", key=f"g_{key}",
-                icon=":material/check:" if is_done else None,
-                type="primary" if is_done else "secondary",
-                help="Gathered. Click to undo." if is_done else "Mark as gathered",
-                on_click=toggle_done, args=(key,),
-            )
-            c[2].markdown(cell_media(r), unsafe_allow_html=True)
-            c[3].markdown(cell_gather(r), unsafe_allow_html=True)
-            c[4].markdown(cell_source(r, by_key), unsafe_allow_html=True)
-            c[5].markdown(cell_script(r), unsafe_allow_html=True)
+    with st.container(key="tbody"):
+        if not visible:
+            st.markdown('<div class="empty">No scenes match these filters.</div>', unsafe_allow_html=True)
+            return
+        dim = [
+            f'.st-key-row_{r["key"]} [data-testid="stMarkdownContainer"]'
+            for r in visible if done.get(r["key"])
+        ]
+        if dim:
+            st.markdown(f"<style>{','.join(dim)}{{opacity:.5}}</style>", unsafe_allow_html=True)
+        for r in visible:
+            key = r["key"]
+            is_done = bool(done.get(key))
+            with st.container(key=f"row_{key}"):
+                c = st.columns(SPEC, gap="small")
+                mark, sid = c[0].columns([1, 2.2], gap="xsmall")
+                mark.button(
+                    "\u200b", key=f"g_{key}",
+                    type="primary" if is_done else "secondary",
+                    help="Gathered. Click to undo." if is_done else "Mark as gathered",
+                    on_click=toggle_done, args=(key,),
+                )
+                sid.markdown(cell_id(r), unsafe_allow_html=True)
+                c[1].markdown(cell_media(r), unsafe_allow_html=True)
+                c[2].markdown(cell_gather(r), unsafe_allow_html=True)
+                c[3].markdown(cell_source(r, by_key), unsafe_allow_html=True)
+                c[4].markdown(cell_script(r), unsafe_allow_html=True)
 
 
 def main():
@@ -379,13 +385,19 @@ def main():
     with st.container(key="topbar"):
         left, right = st.columns([3, 2], vertical_alignment="center")
         left.markdown(f'<div class="title">{TITLE}</div>', unsafe_allow_html=True)
-        up = right.file_uploader("Scene plan CSV", type=["csv"], label_visibility="collapsed")
-        load_upload(up)
         rows = st.session_state.get("rows")
         if rows:
+            right.markdown(
+                f'<div class="chipwrap"><div class="fchip">{esc(st.session_state.get("fname", ""))}'
+                f'<span>{len(rows)} scenes</span></div></div>',
+                unsafe_allow_html=True,
+            )
             done = st.session_state.done
             visible = render_filters(rows, done)
             render_header_row()
+        else:
+            up = right.file_uploader("Scene plan CSV", type=["csv"], label_visibility="collapsed")
+            load_upload(up)
 
     if not rows:
         st.markdown(
