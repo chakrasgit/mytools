@@ -19,86 +19,100 @@ FIELDS = [
 
 # Badge colors (background, text) per media type, lower-case keys.
 BADGES = {
-    "real image": ("#12304a", "#7cc8f0"),
-    "screenshot": ("#17315c", "#8fb8f5"),
-    "screen recording": ("#2b2354", "#b6a6f0"),
-    "clip": ("#232a5e", "#a3b0f2"),
-    "animation clip": ("#10393a", "#6fd0c4"),
-    "animation code": ("#0f3744", "#6cc9df"),
-    "ai-generated image": ("#431f38", "#eca0c8"),
-    "ai-generated video": ("#473416", "#e6b867"),
+    "real image": ("#17415f", "#9ad9f7"),
+    "screenshot": ("#1d3f78", "#a9c8fb"),
+    "screen recording": ("#392f73", "#cbbdf8"),
+    "clip": ("#2e3680", "#bcc6f8"),
+    "animation clip": ("#14504f", "#8fe0d4"),
+    "animation code": ("#12495c", "#8ddaee"),
+    "ai-generated image": ("#5a2748", "#f4b6d6"),
+    "ai-generated video": ("#5c4519", "#f2cb80"),
 }
-DEFAULT_BADGE = ("#232b3b", "#a6b0c4")
+DEFAULT_BADGE = ("#313a50", "#c3cce0")
 
 # Column widths: ID, gathered mark, media, what to gather, source, script.
 SPEC = [0.55, 0.45, 2.4, 3.2, 3.2, 3.4]
-HEADS = ["ID", "\u2713", "Media", "What to gather", "Source or prompt", "Script"]
+HEADS = ["ID", "Done", "Media", "What to gather", "Source or prompt", "Script"]
 
 CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;500&display=swap');
 
 [data-testid="stHeader"]{display:none}
-[data-testid="stMainBlockContainer"]{padding:0.8rem 1.4rem 3rem;max-width:100%}
+[data-testid="stMainBlockContainer"]{padding:0.7rem 1.4rem 3rem;max-width:100%}
+.title,.cell,.glabel,.head,[class*="st-key-"] button{font-family:"Segoe UI",system-ui,-apple-system,sans-serif}
 
-.st-key-topbar{position:sticky;top:0;z-index:100;background:#0e1526;padding:0.2rem 0 0.5rem;gap:0.5rem}
-.st-key-pane{background:#121b30;border:1px solid #26344f;border-radius:10px;padding:0.6rem 0.7rem;gap:0.5rem}
-.st-key-grp_status,.st-key-grp_type{background:#0e1526;border:1px solid #223051;border-radius:8px;padding:0.5rem 0.65rem;gap:0.35rem}
+/* sticky top area */
+[data-testid="stLayoutWrapper"]:has(> .st-key-topbar){position:sticky;top:0;z-index:100;background:#0e1526}
+.st-key-topbar{background:#0e1526;padding:0.1rem 0 0.4rem;gap:0.5rem}
+.title{font-size:1.25rem;font-weight:500;color:#f1f5ff}
 
-.title{font-size:1.2rem;font-weight:500;color:#eaf1ff}
-.glabel{font-size:11px;color:#8d9bb8}
-.fname{font-size:12px;color:#8d9bb8}
-
-[data-testid="stFileUploaderDropzone"]{padding:0.35rem 0.6rem;background:#121b30;border:1px solid #26344f;border-radius:10px}
+/* upload */
+[data-testid="stFileUploaderDropzone"]{padding:0.3rem 0.5rem;background:#1b2845;border:none;border-radius:8px}
 [data-testid="stFileUploaderDropzoneInstructions"]{display:none}
 
-[class*="st-key-fs_"] button,[class*="st-key-ft_"] button,.st-key-reset_filters button{
-  width:100%;min-height:30px;height:30px;padding:0 6px;border-radius:6px;font-size:12px;
-  white-space:nowrap;overflow:hidden;transition:background .12s,border-color .12s,color .12s,transform .06s}
-[class*="st-key-fs_"] button p,[class*="st-key-ft_"] button p,.st-key-reset_filters button p{
-  font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-[class*="st-key-fs_"] button[data-testid="stBaseButton-secondary"],
-[class*="st-key-ft_"] button[data-testid="stBaseButton-secondary"],
-.st-key-reset_filters button{background:transparent;border:1px solid #2f4066;color:#a9b6d3}
-[class*="st-key-fs_"] button[data-testid="stBaseButton-secondary"]:hover,
-[class*="st-key-ft_"] button[data-testid="stBaseButton-secondary"]:hover,
-.st-key-reset_filters button:hover{background:rgba(79,140,240,.22);border-color:rgba(79,140,240,.6);color:#d6e4ff}
-[class*="st-key-fs_"] button[data-testid="stBaseButton-secondary"]:active,
-[class*="st-key-ft_"] button[data-testid="stBaseButton-secondary"]:active,
-.st-key-reset_filters button:active{background:rgba(79,140,240,.42);border-color:#6aa0f5;color:#fff;transform:scale(.97)}
-[class*="st-key-fs_"] button[data-testid="stBaseButton-primary"],
-[class*="st-key-ft_"] button[data-testid="stBaseButton-primary"]{background:rgba(79,140,240,.68);border:1px solid #7fb0f8;color:#fff}
-[class*="st-key-fs_"] button[data-testid="stBaseButton-primary"]:hover,
-[class*="st-key-ft_"] button[data-testid="stBaseButton-primary"]:hover{background:rgba(79,140,240,.8);border-color:#9bc2fa;color:#fff}
-[class*="st-key-fs_"] button[data-testid="stBaseButton-primary"]:active,
-[class*="st-key-ft_"] button[data-testid="stBaseButton-primary"]:active{background:rgba(79,140,240,.9);transform:scale(.97)}
-.st-key-reset_filters button{width:34px;min-width:34px;padding:0}
+/* filter panel: one panel, two lines, divider between */
+.st-key-pane{background:#16213a;border-radius:10px;padding:0.35rem 0.7rem;gap:0}
+.st-key-frow_status,.st-key-frow_type{padding:0.4rem 0}
+.st-key-frow_type{border-top:1px solid #2a3b61}
+.glabel{font-size:13px;font-weight:500;color:#b9c5de;white-space:nowrap}
 
-[class*="st-key-g_"] button{width:22px;min-width:22px;min-height:22px;height:22px;padding:0;border-radius:6px;
-  transition:none;box-shadow:none}
-[class*="st-key-g_"] button p{font-size:14px;line-height:1}
+/* filter buttons: no borders, filled shapes, blue states */
+[class*="st-key-fs_"] button,[class*="st-key-ft_"] button{
+  width:100%;height:32px;min-height:32px;padding:0 8px;border:none;border-radius:7px;box-shadow:none;
+  white-space:nowrap;overflow:hidden;transition:background .12s,color .12s,transform .06s}
+[class*="st-key-fs_"] button p,[class*="st-key-ft_"] button p{
+  font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+[class*="st-key-fs_"] button[data-testid="stBaseButton-secondary"],
+[class*="st-key-ft_"] button[data-testid="stBaseButton-secondary"]{background:#1f2d4d;color:#d3ddf2}
+[class*="st-key-fs_"] button[data-testid="stBaseButton-secondary"]:hover,
+[class*="st-key-ft_"] button[data-testid="stBaseButton-secondary"]:hover{background:#2b4378;color:#ffffff}
+[class*="st-key-fs_"] button[data-testid="stBaseButton-secondary"]:active,
+[class*="st-key-ft_"] button[data-testid="stBaseButton-secondary"]:active{background:#35569e;color:#ffffff;transform:scale(.97)}
+[class*="st-key-fs_"] button[data-testid="stBaseButton-primary"],
+[class*="st-key-ft_"] button[data-testid="stBaseButton-primary"]{background:#3b78e7;color:#ffffff}
+[class*="st-key-fs_"] button[data-testid="stBaseButton-primary"]:hover,
+[class*="st-key-ft_"] button[data-testid="stBaseButton-primary"]:hover{background:#4d87f0;color:#ffffff}
+[class*="st-key-fs_"] button[data-testid="stBaseButton-primary"]:active,
+[class*="st-key-ft_"] button[data-testid="stBaseButton-primary"]:active{background:#2f66cc;color:#ffffff;transform:scale(.97)}
+
+/* reset icon button */
+.st-key-reset_filters{display:flex;justify-content:flex-end}
+.st-key-reset_filters button{width:32px;min-width:32px;height:32px;min-height:32px;padding:0;border:none;border-radius:7px;
+  background:#1f2d4d;color:#d3ddf2;box-shadow:none;display:flex;align-items:center;justify-content:center}
+.st-key-reset_filters button:hover{background:#2b4378;color:#fff}
+.st-key-reset_filters button:active{background:#35569e;color:#fff;transform:scale(.95)}
+.st-key-reset_filters button p{display:none}
+.st-key-reset_filters button span{margin:0}
+
+/* gathered mark: two states, centered */
+[class*="st-key-g_"] button{width:26px;min-width:26px;height:26px;min-height:26px;padding:0;border:none;border-radius:7px;
+  box-shadow:none;transition:none;display:flex;align-items:center;justify-content:center}
+[class*="st-key-g_"] button p{display:none}
+[class*="st-key-g_"] button span{margin:0;font-size:18px}
 [class*="st-key-g_"] button[data-testid="stBaseButton-secondary"],
 [class*="st-key-g_"] button[data-testid="stBaseButton-secondary"]:hover,
-[class*="st-key-g_"] button[data-testid="stBaseButton-secondary"]:active{background:#2a3552;border:1px solid #4a5a80;color:transparent}
+[class*="st-key-g_"] button[data-testid="stBaseButton-secondary"]:active{background:#3a4a72;color:transparent}
 [class*="st-key-g_"] button[data-testid="stBaseButton-primary"],
 [class*="st-key-g_"] button[data-testid="stBaseButton-primary"]:hover,
-[class*="st-key-g_"] button[data-testid="stBaseButton-primary"]:active{background:#4f8cf0;border:1px solid #4f8cf0;color:#fff}
+[class*="st-key-g_"] button[data-testid="stBaseButton-primary"]:active{background:#3b78e7;color:#ffffff}
 
-[class*="st-key-row_"]{border-bottom:1px solid #1c2740;padding:0.55rem 0}
-.head{font-size:11px;color:#8d9bb8;border-bottom:1px solid #26344f;padding-bottom:4px}
+/* rows */
+[class*="st-key-row_"]{border-bottom:1px solid #26365a;padding:0.65rem 0}
+.head{font-size:12px;font-weight:500;color:#b9c5de;border-bottom:1px solid #2a3b61;padding-bottom:5px}
 
-.cell{font-size:13px;line-height:1.55;color:#dbe3f4;overflow-wrap:anywhere}
-.cell a{color:#7fb0f8}
-.sid{font-weight:500}
-.mname{font-weight:500;margin-bottom:4px}
-.dur{font-size:12px;color:#8d9bb8;margin-top:4px}
-.bd{display:inline-block;font-size:11px;padding:1px 9px;border-radius:6px}
-.rl{display:inline-block;font-size:11px;padding:1px 8px;border-radius:6px;background:#473416;color:#e6b867;margin-right:6px}
-.also{font-size:12px;color:#8d9bb8;margin-top:6px}
-.chunk{font-size:11px;color:#8d9bb8;margin-bottom:3px}
-.te{font-family:"Noto Sans Telugu","Nirmala UI","Gautami",sans-serif;font-size:13px;line-height:1.8}
-.en{font-size:13px;color:#98a6c4;margin-top:4px}
+.cell{font-size:13.5px;line-height:1.6;color:#e8eefc;overflow-wrap:anywhere;padding-bottom:1rem}
+.cell a{color:#8fbcff}
+.sid{font-weight:600;color:#f1f5ff}
+.mname{font-weight:500;color:#f1f5ff;margin-bottom:5px}
+.dur{font-size:12.5px;color:#aab6d1;margin-top:5px}
+.bd{display:inline-block;font-size:12px;font-weight:500;padding:2px 10px;border-radius:6px}
+.rl{display:inline-block;font-size:12px;font-weight:500;padding:2px 9px;border-radius:6px;background:#5c4519;color:#f2cb80;margin-right:7px}
+.also{font-size:12.5px;color:#aab6d1;margin-top:6px}
+.chunk{font-size:12px;color:#9fb0cf;margin-bottom:4px}
+.te{font-family:"Noto Sans Telugu","Nirmala UI","Gautami",sans-serif;font-size:13.5px;line-height:1.85;color:#f1f5ff}
+.en{font-size:13.5px;color:#b9c5de;margin-top:5px}
 .anc{display:block;position:relative;top:-230px;visibility:hidden}
-.empty{color:#8d9bb8;padding:2rem 0}
+.empty{color:#aab6d1;padding:2rem 0}
 """
 
 URL_RE = re.compile(
@@ -268,14 +282,20 @@ def load_upload(up):
 
 # ---------- rendering ----------
 
-def filter_buttons(prefix, options, current, state_name, slots):
-    cols = st.columns(slots, gap="small")
-    for i, (value, label) in enumerate(options):
-        cols[i].button(
-            label, key=f"{prefix}_{i}", width="stretch",
+FILTER_SPEC_LABEL = 1.15
+
+
+def filter_row(prefix, label, options, current, state_name, slots):
+    """One filter line: a label column, then equal-width buttons. Returns the columns."""
+    cols = st.columns([FILTER_SPEC_LABEL] + [2] * slots, gap="small", vertical_alignment="center")
+    cols[0].markdown(f'<div class="glabel">{label}</div>', unsafe_allow_html=True)
+    for i, (value, text) in enumerate(options):
+        cols[i + 1].button(
+            text, key=f"{prefix}_{i}", width="stretch",
             type="primary" if value == current else "secondary",
             on_click=set_filter, args=(state_name, value),
         )
+    return cols
 
 
 def render_filters(rows, done):
@@ -296,24 +316,22 @@ def render_filters(rows, done):
         ("todo", f"To gather [{len(in_type) - n_done}]"),
         ("done", f"Gathered [{n_done}]"),
     ]
-    slots = max(3, len(type_opts))
+    slots = max(4, len(type_opts))
 
     with st.container(key="pane"):
-        head, reset = st.columns([30, 1], vertical_alignment="center")
-        head.markdown('<div class="glabel">Filters</div>', unsafe_allow_html=True)
-        reset.button("\u21bb", key="reset_filters", help="Reset filters", on_click=reset_filters)
-        with st.container(key="grp_status"):
-            st.markdown('<div class="glabel">Status</div>', unsafe_allow_html=True)
-            filter_buttons("fs", status_opts, f_status, "f_status", slots)
-        with st.container(key="grp_type"):
-            st.markdown('<div class="glabel">Media type</div>', unsafe_allow_html=True)
-            filter_buttons("ft", type_opts, f_type, "f_type", slots)
+        with st.container(key="frow_status"):
+            cols = filter_row("fs", "Status", status_opts, f_status, "f_status", slots)
+            cols[-1].button(
+                "\u200b", key="reset_filters", icon=":material/refresh:",
+                help="Reset filters", on_click=reset_filters,
+            )
+        with st.container(key="frow_type"):
+            filter_row("ft", "Media type", type_opts, f_type, "f_type", slots)
 
-    visible = [
+    return [
         r for r in in_type
         if f_status == "All" or (f_status == "done") == bool(done.get(r["key"]))
     ]
-    return visible
 
 
 def render_header_row():
@@ -340,7 +358,8 @@ def render_rows(visible, rows, done):
             c = st.columns(SPEC, gap="small")
             c[0].markdown(cell_id(r), unsafe_allow_html=True)
             c[1].button(
-                "\u2713" if is_done else "\u00a0", key=f"g_{key}",
+                "\u200b", key=f"g_{key}",
+                icon=":material/check:" if is_done else None,
                 type="primary" if is_done else "secondary",
                 help="Gathered. Click to undo." if is_done else "Mark as gathered",
                 on_click=toggle_done, args=(key,),
