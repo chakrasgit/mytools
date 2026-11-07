@@ -17,6 +17,9 @@ FIELDS = [
     "source_or_prompt", "reuse_of", "suggested_format", "notes",
 ]
 
+# Optional column written by TeChakra's capture program: "yes" marks a row as already gathered on upload.
+GATHERED_COL = "gathered"
+
 # Columns the app shows. The CSV must contain all of them; any other columns are ignored.
 REQUIRED = [
     "chunk", "scene_id", "media_name", "media_type", "duration_s", "script_part_te",
@@ -184,6 +187,7 @@ def build_rows(text):
     raw = []
     for rec in reader:
         row = {f: (rec.get(f) or "").strip() for f in FIELDS}
+        row["gathered"] = (rec.get(GATHERED_COL) or "").strip().lower() in ("yes", "true", "1", "done")
         if row["scene_id"] or row["media_name"]:
             raw.append(row)
     rows = [r for _, r in sorted(enumerate(raw), key=sort_key)]
@@ -287,7 +291,7 @@ def load_upload(up):
         st.error(str(exc))
         return
     st.session_state.rows = rows
-    st.session_state.done = {r["key"]: False for r in rows}
+    st.session_state.done = {r["key"]: r.get("gathered", False) for r in rows}
     st.session_state.fname = up.name
     reset_filters()
     st.rerun()
