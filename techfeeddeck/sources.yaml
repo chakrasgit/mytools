@@ -17,7 +17,6 @@
 independent:
   accounts:
     - testingcatalog
-    - codexresets_
   people:
     - VaibhavSisinty
   links:
@@ -39,7 +38,7 @@ independent:
 
 companies:
   - name: "OpenAI"
-    accounts: [OpenAI, OpenAIDevs, ChatGPT]
+    accounts: [OpenAI, OpenAIDevs, ChatGPT, codexresets_]
     people: [sama, gdb]
     links:
       - name: "News"
