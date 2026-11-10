@@ -1,58 +1,175 @@
-# Edit this file to add, remove, or reorder your sources.
-# Each entry needs a "name" (shown on the button) and a "url" (where it
-# opens to, in a new tab). Columns do not need to have the same number of
-# entries, shorter columns just leave blank cells at the bottom.
+# TechFeedDeck sources
+#
+# Layout: an "independent" box first, then one box per company.
+# Each box can have four groups (all optional, any order of entries):
+#
+#   accounts : official X accounts      -> just the handle, no @ and no URL
+#   people   : individual X accounts    -> just the handle
+#   links    : news, blogs, docs        -> name + url
+#   youtube  : YouTube channels         -> name + url
+#
+# To add an X account, add one line, e.g.   - SomeHandle
+# To add a link, add two lines:             - name: "Some Blog"
+#                                             url: "https://example.com/blog"
+# To add a company, copy any block under "companies" and edit it.
+# Companies appear in the order listed here.
 
-twitter:
-  - name: "VaibhavSisinty"
-    url: "https://x.com/VaibhavSisinty"
-  - name: "Twitter Account 2"
-    url: "https://x.com/replace_me_2"
-  - name: "Twitter Account 3"
-    url: "https://x.com/replace_me_3"
+independent:
+  accounts:
+    - testingcatalog
+    - codexresets_
+  people:
+    - VaibhavSisinty
+  links:
+    - name: "Reuters AI"
+      url: "https://www.reuters.com/technology/artificial-intelligence/"
+    - name: "AI Weekly"
+      url: "https://aiweekly.co/"
+  youtube:
+    - name: "Vaibhav Sisinty"
+      url: "https://www.youtube.com/@vaibhavsisinty"
+    - name: "AI Search"
+      url: "https://www.youtube.com/@theAIsearch"
+    - name: "AI Revolution"
+      url: "https://www.youtube.com/@airevolutionx"
+    - name: "WorldofAI"
+      url: "https://www.youtube.com/@intheworldofai"
+    - name: "Code Digi"
+      url: "https://www.youtube.com/@codedigiptbiplab"
 
-reddit:
-  - name: "r/replace_me_1"
-    url: "https://www.reddit.com/r/replace_me_1"
-  - name: "r/replace_me_2"
-    url: "https://www.reddit.com/r/replace_me_2"
+companies:
+  - name: "OpenAI"
+    accounts: [OpenAI, OpenAIDevs, ChatGPT]
+    people: [sama, gdb]
+    links:
+      - name: "News"
+        url: "https://openai.com/news/"
+      - name: "Developer blog"
+        url: "https://developers.openai.com/blog"
+      - name: "Research"
+        url: "https://openai.com/research/index/"
+    youtube:
+      - name: "OpenAI"
+        url: "https://www.youtube.com/@openai"
 
-youtube:
-  - name: "@vaibhavsisinty"
-    url: "https://www.youtube.com/@vaibhavsisinty"
-  - name: "@theAIsearch"
-    url: "https://www.youtube.com/@theAIsearch"
-  - name: "@airevolutionx"
-    url: "https://www.youtube.com/@airevolutionx"
-  - name: "@intheworldofai"
-    url: "https://www.youtube.com/@intheworldofai"
-  - name: "@codedigiptbiplab"
-    url: "https://www.youtube.com/@codedigiptbiplab"
+  - name: "Anthropic"
+    accounts: [AnthropicAI, claudeai, ClaudeDevs]
+    links:
+      - name: "News"
+        url: "https://www.anthropic.com/news"
+      - name: "Research"
+        url: "https://www.anthropic.com/research"
+    youtube:
+      - name: "Anthropic"
+        url: "https://www.youtube.com/@anthropic-ai"
 
-websites:
-  - name: "OpenAI News"
-    url: "https://openai.com/news/"
-  - name: "OpenAI Research"
-    url: "https://openai.com/research/index/"
-  - name: "Anthropic News"
-    url: "https://www.anthropic.com/news"
-  - name: "Google DeepMind Blog"
-    url: "https://deepmind.google/blog/"
-  - name: "xAI News"
-    url: "https://x.ai/news"
-  - name: "Mistral News"
-    url: "https://mistral.ai/news/"
-  - name: "Meta AI Blog"
-    url: "https://ai.meta.com/blog/"
-  - name: "Cohere Blog"
-    url: "https://cohere.com/blog"
-  - name: "Reuters AI"
-    url: "https://www.reuters.com/technology/artificial-intelligence/"
-  - name: "NVIDIA News"
-    url: "https://nvidianews.nvidia.com/news/latest"
-  - name: "DeepSeek Blog"
-    url: "https://deepseek.ai/blog"
-  - name: "Microsoft AI News"
-    url: "https://news.microsoft.com/source/tag/ai/"
-  - name: "AI Weekly"
-    url: "https://aiweekly.co/"
+  - name: "Thinking Machines"
+    accounts: [thinkymachines]
+    people: [miramurati]
+    links:
+      - name: "Website"
+        url: "https://thinkingmachines.ai/"
+
+  - name: "Nvidia"
+    accounts: [nvidia, NVIDIAAIDev, NVIDIADC, NVIDIAGeForce, NVIDIAStudio, NVIDIAGTC, NVIDIA_AI_PC]
+    links:
+      - name: "Newsroom"
+        url: "https://nvidianews.nvidia.com/"
+      - name: "Blog"
+        url: "https://blogs.nvidia.com/"
+    youtube:
+      - name: "NVIDIA"
+        url: "https://www.youtube.com/@NVIDIA"
+      - name: "NVIDIA Developer"
+        url: "https://www.youtube.com/@NVIDIADeveloper"
+
+  - name: "Google / DeepMind"
+    accounts: [Google, GoogleDeepMind, GoogleAI, GeminiApp]
+    people: [sundarpichai, demishassabis]
+    links:
+      - name: "Google blog"
+        url: "https://blog.google/"
+      - name: "DeepMind blog"
+        url: "https://deepmind.google/blog/"
+    youtube:
+      - name: "Google"
+        url: "https://www.youtube.com/@Google"
+      - name: "Google DeepMind"
+        url: "https://www.youtube.com/@googledeepmind"
+      - name: "Google for Developers"
+        url: "https://www.youtube.com/@GoogleDevelopers"
+
+  - name: "Meta"
+    accounts: [Meta, AIatMeta]
+    links:
+      - name: "AI blog"
+        url: "https://ai.meta.com/blog/"
+    youtube:
+      - name: "AI at Meta"
+        url: "https://www.youtube.com/@aiatmeta"
+
+  # xAI was renamed SpaceXAI in July 2026 and its X handle changed from
+  # @xai to @SpaceXAI. Grok and the x.ai site are still live.
+  - name: "xAI / SpaceXAI"
+    accounts: [SpaceXAI, grok]
+    people: [elonmusk]
+    links:
+      - name: "News"   # not confirmed, check it still resolves
+        url: "https://x.ai/news"
+      - name: "API docs"
+        url: "https://docs.x.ai/"
+
+  - name: "Microsoft"
+    accounts: [Microsoft, MSFTCopilot]
+    people: [satyanadella, mustafasuleyman]
+    links:
+      - name: "AI news"
+        url: "https://news.microsoft.com/source/topics/ai/"
+    youtube:
+      - name: "Microsoft"
+        url: "https://www.youtube.com/@Microsoft"
+
+  - name: "Mistral"
+    accounts: [MistralAI]
+    people: [arthurmensch]
+    links:
+      - name: "News"
+        url: "https://mistral.ai/news"
+    youtube:
+      - name: "Mistral AI"
+        url: "https://www.youtube.com/@mistralaiofficial"
+
+  - name: "Perplexity"
+    accounts: [perplexity_ai]
+    people: [AravSrinivas]
+    links:
+      - name: "Blog"
+        url: "https://www.perplexity.ai/hub/blog"
+    youtube:
+      - name: "Perplexity"
+        url: "https://www.youtube.com/@perplexity-ai"
+
+  - name: "Safe Superintelligence"
+    people: [ilyasut]
+    links:
+      - name: "Website"
+        url: "https://ssi.inc/"
+
+  - name: "DeepSeek"
+    accounts: [deepseek_ai]
+    links:
+      - name: "API docs and changelog"
+        url: "https://api-docs.deepseek.com/"
+
+  - name: "Qwen (Alibaba)"
+    accounts: [Alibaba_Qwen]
+    links:
+      - name: "Blog"
+        url: "https://qwen.ai/blog"
+      - name: "Blog (archive)"
+        url: "https://qwenlm.github.io/blog/"
+
+  - name: "Cohere"
+    links:
+      - name: "Blog"
+        url: "https://cohere.com/blog"
